@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, SchemaType } = require("mongoose");
 
 const UserSchema = new Schema(
   {
@@ -27,6 +27,19 @@ const UserSchema = new Schema(
     admin: {
       type: Boolean,
     },
+    country: {
+      type: Schema.Types.ObjectId,
+      ref: "Country",
+    },
+    team: {
+      type: Schema.Types.ObjectId,
+      ref: "Teams",
+    },
+    password: {
+      type: String,
+      trim: true,
+      required: [true, "La contraseña es obligatoria"],
+    },
     hobbies: Array,
   },
   {
@@ -34,5 +47,9 @@ const UserSchema = new Schema(
     versionKey: false,
   }
 );
+UserSchema.methods.toJSON = function () {
+  const { password, ...user } = this.toObject();
+  return user;
+};
 
 module.exports = model("User", UserSchema);
